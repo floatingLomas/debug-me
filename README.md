@@ -1,6 +1,6 @@
 # debug-me
 
-> Let the location decide what the `debug` label should be!
+> Let the location you call it from decide what the `debug` label should be!
 
 ## Installation
 
