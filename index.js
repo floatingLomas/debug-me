@@ -1,19 +1,33 @@
-const path = require('path');
-const _debug = require('debug');
-const callerId = require('caller-id');
-const AppRootDir = require('app-root-dir');
+'use strict';
 
-const rootDir = AppRootDir.get();
-const callerPackage = require(path.join(rootDir, 'package.json'));
+var path = require('path');
+var _debug = require('debug');
 
-const meta = _debug('debug-me');
+var meta = _debug('debug-me');
 
-const pathSegmentsToSkip = ['lib', 'src'];
+var rootDir = require('app-root-dir').get();
+var callerPackage = require(path.join(rootDir, 'package.json'));
 
-const debuggers = {};
+meta('rootDir', rootDir);
+meta('callerPackage', callerPackage);
+
+var pathSegmentsToSkip = ['lib', 'src'];
 
 function DebugMe() {
-  var label = buildLabelFromCallerFile(callerId.getData().filePath);
+  var callerPath = getCallerFile();
+  meta('callerPath', callerPath);
+
+  var debuggerInstance = getOrBuildDebugger(callerPath);
+
+  if (arguments.length) debuggerInstance.apply(this, arguments);
+
+  return debuggerInstance;
+}
+
+var debuggers = {};
+
+function getOrBuildDebugger(callerPath) {
+  var label = buildLabelFromCallerFile(callerPath);
 
   meta('Getting Debug', {
     label: label,
@@ -71,5 +85,30 @@ function getCallerFile() {
 
   return callerfile;
 }
+
+DebugMe.addSegmentToSkip = function(segment) {
+  if (typeof segment !== 'string') throw new Error('segment must be a String');
+
+  segment = segment.trim();
+
+  if (pathSegmentsToSkip.indexOf(segment) == -1) pathSegmentsToSkip.push(segment);
+};
+
+DebugMe.removeSegmentToSkip = function(segment) {
+  if (typeof segment !== 'string') throw new Error('segment must be a String');
+
+  var index = pathSegmentsToSkip.indexOf(segment.trim());
+
+  if (index > -1) pathSegmentsToSkip.splice(index, 1);
+};
+
+Object.defineProperty(DebugMe, 'segmentsToSkip', {
+  set: function() {},
+  get: function() {
+    return pathSegmentsToSkip;
+  },
+  configurable: false,
+  enumerable: true
+});
 
 module.exports = exports = DebugMe;
