@@ -14,6 +14,8 @@ meta('callerPackage', callerPackage);
 var pathSegmentsToSkip = ['lib', 'src'];
 
 function DebugMe() {
+  meta('Args', arguments);
+
   var callerPath = getCallerFile();
   meta('callerPath', callerPath);
 

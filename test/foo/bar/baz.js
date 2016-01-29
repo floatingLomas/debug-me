@@ -21,7 +21,7 @@ describe('DebugMe', function() {
       let _log = _debug.log;
 
       _debug.enable('*');
-      _debug.log = onDebug;
+      _debug.log = onDebug.bind(null, done);
 
       var debug = DebugMe();
 
@@ -29,19 +29,6 @@ describe('DebugMe', function() {
 
       _debug.log = _log;
       _debug.disable('*');
-
-      function onDebug(logEntry, logMeta) {
-        let bySpaces = stripAnsi(logEntry).trim().split(' ');
-
-        let logLabel = bySpaces.shift();
-        let logMessage = bySpaces.shift();
-
-        logLabel.should.eql('debug-me:test:foo:bar:baz');
-        logMessage.should.eql(message);
-        logMeta.should.eql(meta);
-
-        done();
-      }
     });
   });
 
@@ -50,25 +37,12 @@ describe('DebugMe', function() {
       let _log = _debug.log;
 
       _debug.enable('*');
-      _debug.log = onDebug;
+      _debug.log = onDebug.bind(null, done);
 
       DebugMe(message, meta);
 
       _debug.log = _log;
       _debug.disable('*');
-
-      function onDebug(logEntry, logMeta) {
-        let bySpaces = stripAnsi(logEntry).trim().split(' ');
-
-        let logLabel = bySpaces.shift();
-        let logMessage = bySpaces.shift();
-
-        logLabel.should.eql('debug-me:test:foo:bar:baz');
-        logMessage.should.eql(message);
-        logMeta.should.eql(meta);
-
-        done();
-      }
     });
   });
 
@@ -117,3 +91,31 @@ describe('DebugMe', function() {
     });
   });
 });
+
+function onDebug(done, logEntry, logMeta) {
+  logEntry = stripAnsi(logEntry);
+
+  // If this isn't a tty, it gets a UTC Date String at the beginning:
+  // Mon, 03 Jul 2006 21:44:38 GMT
+  // Fri, 29 Jan 2016 01:47:37 GMT
+  var dateTest = Date.parse(logEntry.slice(0, 29));
+
+  console.log('DATE', isNaN(dateTest), dateTest);
+
+  if (!isNaN(dateTest)) {
+    logEntry = logEntry.slice(29).trim();
+  }
+
+  let bySpaces = logEntry.trim().split(' ');
+
+  console.log('bySpaces', bySpaces);
+
+  let logLabel = bySpaces.shift();
+  let logMessage = bySpaces.shift();
+
+  logLabel.should.eql('debug-me:test:foo:bar:baz');
+  logMessage.should.eql(message);
+  logMeta.should.eql(meta);
+
+  done();
+}
