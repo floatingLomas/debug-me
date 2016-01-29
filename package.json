@@ -7,6 +7,11 @@
     "test": "mocha test --recursive"
   },
   "author": "Jonathan Lomas <jonathan@floatinglomas.ca>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/floatingLomas/debug-me"
+  },
+
   "license": "ISC",
   "dependencies": {
     "app-root-dir": "^1.0.2",
