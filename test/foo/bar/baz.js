@@ -95,20 +95,16 @@ describe('DebugMe', function() {
 function onDebug(done, logEntry, logMeta) {
   logEntry = stripAnsi(logEntry);
 
-  // If this isn't a tty, it gets a UTC Date String at the beginning:
+  // If this isn't a tty, debug gives it a UTC Date String at the beginning:
   // Mon, 03 Jul 2006 21:44:38 GMT
   // Fri, 29 Jan 2016 01:47:37 GMT
   var dateTest = Date.parse(logEntry.slice(0, 29));
-
-  console.log('DATE', isNaN(dateTest), dateTest);
 
   if (!isNaN(dateTest)) {
     logEntry = logEntry.slice(29).trim();
   }
 
   let bySpaces = logEntry.trim().split(' ');
-
-  console.log('bySpaces', bySpaces);
 
   let logLabel = bySpaces.shift();
   let logMessage = bySpaces.shift();
