@@ -1,7 +1,7 @@
 {
   "name": "debug-me",
-  "version": "0.0.1",
-  "description": "A wrapper around `debug` that uses the current file's path as the `debug` name",
+  "version": "0.0.2",
+  "description": "A wrapper around debug that uses the current file's path as the debug label",
   "main": "index.js",
   "scripts": {
     "test": "mocha test --recursive"
