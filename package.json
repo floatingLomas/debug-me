@@ -1,6 +1,6 @@
 {
   "name": "debug-me",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A wrapper around debug that uses the current file's path as the debug label",
   "main": "index.js",
   "scripts": {
